@@ -278,9 +278,6 @@
 ;;;
 
 
-(defun cm-image-dir ()
-  (namestring (ccl:mac-default-directory)))
-
 (defun env-var (var)
   var 
   nil)
@@ -289,59 +286,6 @@
   (if (eql *package* (find-package :cm))
       (cm-logo)))
 
-(defun save-cm (path &key (type :cmdev) rsrc)
-  (declare (special *cm-readtable*))
-  type rsrc
-  (let (
-        #|(reso 
-         (namestring (make-pathname
-                      :directory
-                      (substitute "etc" "src"
-                                  (pathname-directory 
-                                   ccl:*loading-file-source-file*)
-                                  :test #'equal)
-                      :name "cm" :type "rsrc")))|#
-        (sign ':cm-2))
-    
-    ;; Update the About... menu item
-    (let ((menu (first (ccl:menubar))))
-      (when (typep menu 'ccl:apple-menu)
-        (let ((item (first (ccl:menu-items menu))))
-          (when item 
-            (ccl:set-menu-item-title item "About Common Music")))))
-    
-    (setf ccl::*inhibit-greeting* t)
-    (setf ccl::*listener-window-size* #@(502 150))
-    (setf ccl:*lisp-startup-functions*
-          (append ccl:*lisp-startup-functions*
-                  (list
-                   #'(lambda ()
-                       (declare (special *cm-readtable*))
-                       (setf *package* (find-package :cm))
-                       (setf *readtable* *cm-readtable*)
-                       (let* ((dir (ccl::mac-default-directory))
-                              (fil (OR 
-                                    (probe-file
-                                     (merge-pathnames "cminit.lisp"
-                                                      dir))
-                                    )))
-                         (when fil
-                           (load fil :verbose nil)))
-                       ;(cm-logo)
-                       ;(when *cm-splashscreen*
-                       ;  (cm-splashscreen))
-                       ))))
-    (ccl:save-application path
-                          ;:application-class (find-class 'cm)
-                          :size '(#-clm #xA00000 
-                                  #+clm 24000000
-                                  #x500000)
-                          :excise-compiler (eql type :cm)
-                          :init-file nil
-                          ;:resources (if (probe-file reso)
-                          ;             (ccl::get-app-resources reso sign)
-                          ;             (error "Can't find ~S" reso))
-                          :creator sign)))
 
 ;;;
 ;;; cm-listener

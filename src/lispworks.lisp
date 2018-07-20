@@ -61,27 +61,6 @@
 (defun set-env-var (var)
   (hcl:setenv var))
 
-(defun cm-image-dir ()
-  ;; system:*line-arguments-list*
-  (pathname-directory (lw:lisp-image-name)))
-
-#+lispworks-personal-edition
-(defun save-image (&rest args)
-  args
-  (error "Lispworks Personal Edition does not support save-image."))
-
-#-lispworks-personal-edition
-(defun save-cm (path &rest args)
-  path args
-  (hcl:save-image path 
-                  :restart-function
-                  #'(lambda ()
-                      (declare (special *cm-readtable*))
-                      (setf *package* (find-package :cm))
-                      (setf *readtable* *cm-readtable*)
-                      (load-cminit)
-                      (cm-logo))))
-
 ;;;
 ;;; thread support
 ;;;

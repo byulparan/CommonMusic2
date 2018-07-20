@@ -462,6 +462,9 @@
               (if (gettimepar (parameter-slot (car tail)) supers)
                   (setf goal (car tail))))))))
 
+(defun write-event-streams (lst)
+  (error "sorry, it's not support."))
+
 (defmacro defobject (name supers slots &body options)
   (let ((sups
          (mapcar (lambda (x)

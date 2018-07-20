@@ -106,28 +106,6 @@
       (push (cons (intern (string name) "KEYWORD") (string value))
 	    ext:*environment-list*))))
 
-(defun cm-image-dir ()
-  (let ((img (member "-core" ext:*command-line-strings*)))
-    (if img
-	(namestring
-	 (make-pathname
-	  :directory (pathname-directory (cadr img))))
-      nil)))
-
-(defun save-cm (path &rest args)
-  (declare (ignore args))
-  #+:linkage-table
-  (pushnew 'sys::reinitialize-global-table ext:*after-save-initializations*)       
-  (extensions:save-lisp path :print-herald NIL
-                        :init-function
-                        #'(lambda ()
-                            (declare (special *cm-readtable*))
-                            (setf *readtable* *cm-readtable*)
-                            (setf *package* (find-package :cm))
-                            (load-cminit)                            
-                            (cm-logo)
-                            (lisp::%top-level))))
-
 ;;; attempt thread support on x86 using cmucl's "multiprocessing"
 ;;; package. mp is NOT based on native threads so this is unlikely to
 ;;; work well. decisecond time precision is really bad too.

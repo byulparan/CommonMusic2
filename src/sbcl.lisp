@@ -110,27 +110,6 @@
 
 
 
-(defun cm-image-dir ()
-  (let ((img (second (member "--core" sb-ext:*posix-argv*
-                             :test #'string=))))
-    (if img
-      (namestring
-       (make-pathname :directory (pathname-directory img)))
-      nil)))
-
-(defun save-cm (pathname &rest args)
-  (declare (ignore args))
-  (sb-ext:save-lisp-and-die (namestring pathname)
-                            :toplevel
-                            #'(lambda ()
-                                (declare (special *cm-readtable*))
-                                (setf *readtable* *cm-readtable*)
-                                (setf *package* (find-package :cm))
-                                (load-cminit)                            
-                                (cm-logo)
-                                (sb-impl::toplevel-init)
-                                )))
-
 ;;
 ;;; arrrrg a pox on frigging style warnings!!
 
@@ -251,44 +230,4 @@
 (defgeneric send-bundle (offset message io))
 (defgeneric set-receive-mode! (stream mode))
 (defgeneric reply-set-slots (obj lst))
-
-
-;; bug??: sprout has 2 optionals but rt-sprout has them required
-;(defgeneric rt-sprout (obj time dest))
-;(defgeneric rt-now (io))
-
-(in-package "SB-KERNEL")
-
-#+darwin ; remove when the darwin version release contains it
-(defun round-numeric-bound (x class format up-p)
-  (if x
-      (let ((cx (if (consp x) (car x) x)))
-        (ecase class
-          ((nil rational) x)
-          (integer
-           (if (and (consp x) (integerp cx))
-               (if up-p (1+ cx) (1- cx))
-               (if up-p (ceiling cx) (floor cx))))
-          (float
-           (let ((res
-                  (cond
-                    ((and format (subtypep format 'double-float))
-                      (if (<= most-negative-double-float cx
-                              most-positive-double-float)
-                          (coerce cx format)
-                          nil))
-                     (t
-                      (if (<= most-negative-single-float cx
-                              most-positive-single-float)
-                          ;; FIXME
-                          (coerce cx (or format 'single-float))
-                          nil)))))
-              (if (consp x) (list res) res)))))
-       nil))
-
-
-
-
-
-
 

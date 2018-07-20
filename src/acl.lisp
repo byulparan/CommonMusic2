@@ -84,27 +84,6 @@
               #-win32 "~a -I ~a -L ~a~%"
               lisp mempath initpath))))
 
-(defun cm-image-dir ()
-  (namestring
-   (make-pathname
-    :directory (pathname-directory excl::*image-file*))))
-
 (defun env-var (var)
   (sys:getenv var))
 
-(defun save-cm (path &rest args)
-  (declare (ignore args))
-  ;; what a pain...
-  (dolist (c (class-subclasses (find-class 'container)))
-    (finalize-class c))
-  (let ((fn #'(lambda ()
-		(declare (special *cm-readtable*)
-                         (function load-cminit cm))
-                (tpl:setq-default *readtable* *cm-readtable*)
-                (tpl:setq-default *package* (find-package :cm))
-                (load-cminit)
-                (cm-logo)
-                )))
-    (setf excl::*read-init-files* t)
-    (push fn excl::*restart-actions*)
-    (excl:dumplisp :name path)))

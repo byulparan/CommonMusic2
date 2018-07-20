@@ -37,6 +37,7 @@
 	   #:date-and-time
            #:decimals
 	   #:decode-interval
+	   #:drunk
 	   #:expl
 	   #:explseg
            #:explsegs

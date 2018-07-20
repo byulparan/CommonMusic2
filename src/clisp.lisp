@@ -98,31 +98,6 @@
 (defun set-env-var (var val)
   (system::setenv var val))
 
-(defun cm-image-dir ()
-  ;; clisp's ext:argv only appears in 2.32
-  (let* ((v (ext:argv))
-         (l (length v))
-         (i (position "-M" v :test #'string-equal))
-         )
-    (if (and i (< i (- l 1)))
-      (let ((img (elt v (+ i 1)) ))
-        (enough-namestring img
-                           (concatenate 'string (pathname-name img)
-                                        "." (pathname-type img))))
-      nil)))
-
-(defun save-cm (path &rest args)
-  (declare (ignore args))
-  (ext:saveinitmem path :quiet t
-                   :init-function
-                   #'(lambda ()
-                       (declare (special *cm-readtable*))
-                       (setf *package* (find-package :cm))
-                       (setf *readtable* *cm-readtable*)
-                       (load-cminit)
-                       (cm-logo)
-                       )))
-
 ;;;
 ;;; thread and osc stubs
 ;;;

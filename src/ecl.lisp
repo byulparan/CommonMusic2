@@ -63,15 +63,4 @@
 (defun set-env-var (var val)
   (si:setenv var val))
 
-(defun cm-image-dir ()
-  ;; system:*line-arguments-list*
-  nil)
-
-(defun save-cm (path &rest args)
-  args
-  (c:build-program path :epilogue-code '(progn
-					 (setf *package* (find-package :cm))
-					 (setf *readtable* cm::*cm-readtable*)
-					 (cm::load-cminit)
-					 (cm::cm-logo))))
 
